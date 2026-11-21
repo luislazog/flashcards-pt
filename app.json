@@ -21,6 +21,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "0fc5a570-5745-4a6d-8731-a8e290f3e174"
+      }
+    },
+    "owner": "luislazog"
   }
 }
