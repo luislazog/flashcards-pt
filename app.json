@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "flashcards-pt",
+    "name": "Português",
     "slug": "flashcards-pt",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -16,7 +16,8 @@
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.luislazog.flashcardspt"
     },
     "web": {
       "favicon": "./assets/favicon.png"
