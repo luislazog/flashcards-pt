@@ -11,8 +11,10 @@ Aprende portugués con tarjetas, repetición espaciada y pronunciación.
 ✔ Tarjetas con volteo: ve la palabra en portugués, piensa la respuesta y toca para ver la traducción al español.
 ✔ Repetición espaciada: las palabras que ya sabes aparecen cada vez más tarde; las que se te olvidan vuelven pronto. Estudias menos tiempo y recuerdas más.
 ✔ Pronunciación: escucha cada palabra y su frase de ejemplo en portugués de Brasil.
-✔ 72 tarjetas gratis para empezar: saludos, comida, números y verbos esenciales.
-✔ Bora Pro (compra única opcional): mazos de falsos amigos, viajes y restaurante, y los que vengan.
+✔ Más de 700 tarjetas gratis en 25 mazos, ordenados en una ruta de lo básico a lo avanzado: presentaciones, la ciudad, restaurante, ropa, cuerpo, compras, playa, hotel, viajes y más.
+✔ Muchos verbos (regulares e irregulares con su conjugación), adjetivos, pronombres y vocabulario por tema.
+✔ Mazo de falsos amigos: las palabras que parecen español pero significan otra cosa.
+✔ Cada tarjeta indica si es verbo, adjetivo, sujeto o expresión.
 ✔ Crea tus propias tarjetas con las palabras que necesitas.
 ✔ Sigue tu progreso: nuevas, aprendiendo y dominadas.
 ✔ Sin cuenta ni anuncios, y funciona sin internet: todo se guarda en tu teléfono.
@@ -24,7 +26,7 @@ Ideal para principiantes, viajeros y para hispanohablantes que quieren dar sus p
 **Clasificación de contenido:** apta para todos (sin violencia, sin contenido sensible, sin chat entre usuarios)
 **Seguridad de los datos:** "No se recopilan datos" / "No se comparten datos"
 **Anuncios:** No contiene anuncios
-**Compras en la app:** Sí (un producto: Bora Pro)
+**Compras en la app:** No por ahora (todo es gratis). El código de Bora Pro está listo para activarlo más adelante.
 
 ## Gráficos
 - Icono 512×512: `store/icon-512.png`

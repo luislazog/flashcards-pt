@@ -1,8 +1,11 @@
+export type Kind = 'verbo' | 'adjetivo' | 'sujeto' | 'sustantivo' | 'expresión';
+
 export type Card = {
   id: string;
   pt: string;
   es: string;
   example?: string;
+  kind?: Kind;
   custom?: boolean;
 };
 

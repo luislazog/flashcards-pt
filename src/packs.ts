@@ -1,16 +1,21 @@
 import { BASE_CARDS } from './cards';
+import { c } from './decks/c';
+import {
+  ADJETIVOS, AGENCIA, ADVERBIOS, CALENDARIO, COMPARAR, COMPRAS, CORPO, HOTEL, NUMEROS, PERGUNTAS, PRAIA,
+  PRONOMES, ROUPA, SUBJUNTIVO, U1, U15, U2, U4, VERBOS_AR, VERBOS_ER, VERBOS_IR,
+} from './decks/all';
 import { Card } from './types';
 
 export type Pack = {
   id: string;
   title: string;
   emoji: string;
+  /** Unidad del libro de referencia (o "Transversal" / "Punto de partida") */
+  unit: string;
   description: string;
   premium: boolean;
   cards: Card[];
 };
-
-const c = (id: string, pt: string, es: string, example?: string): Card => ({ id, pt, es, example });
 
 const FALSOS_AMIGOS: Card[] = [
   c('fa-esquisito', 'Esquisito', 'Raro, extraño (no es "exquisito")', 'Que comida esquisita!'),
@@ -98,39 +103,38 @@ const RESTAURANTE: Card[] = [
   c('re-delicioso', 'Delicioso', 'Delicioso, riquísimo', 'Tudo estava delicioso!'),
 ];
 
+const pack = (id: string, emoji: string, title: string, unit: string, description: string, cards: Card[]): Pack => ({
+  id, emoji, title, unit, description, premium: false, cards,
+});
+
+// La ruta sigue el orden de temas del libro "Falar... Ler... Escrever... Português".
+// Por ahora todos los mazos son gratis (premium: false); la compra "Bora Pro" queda lista para más adelante.
 export const PACKS: Pack[] = [
-  {
-    id: 'basico',
-    title: 'Básico',
-    emoji: '🌱',
-    description: 'Saludos, comida, números y verbos esenciales',
-    premium: false,
-    cards: BASE_CARDS,
-  },
-  {
-    id: 'falsos-amigos',
-    title: 'Falsos amigos',
-    emoji: '🎭',
-    description: 'Palabras que parecen español pero significan otra cosa',
-    premium: true,
-    cards: FALSOS_AMIGOS,
-  },
-  {
-    id: 'viajes',
-    title: 'Viajes',
-    emoji: '✈️',
-    description: 'Aeropuerto, hotel, transporte y direcciones',
-    premium: true,
-    cards: VIAJES,
-  },
-  {
-    id: 'restaurante',
-    title: 'Restaurante',
-    emoji: '🍽️',
-    description: 'Pedir, pagar y hablar de comida',
-    premium: true,
-    cards: RESTAURANTE,
-  },
+  pack('basico', '🌱', 'Primeras palabras', 'Punto de partida', 'Saludos, comida, números y verbos esenciales', BASE_CARDS),
+  pack('u1', '👋', 'Presentaciones', 'Unidad 1', 'Pronombres, nacionalidades, profesiones y ser/estar', U1),
+  pack('u2', '🏙️', 'La ciudad', 'Unidad 2', 'Lugares, aquí/allí, ir, ter, gostar de', U2),
+  pack('verbos-ar', '🔤', 'Verbos en -ar', 'Verbos', 'Presente de los verbos regulares en -ar', VERBOS_AR),
+  pack('u3', '❓', 'Preguntas y ser/estar', 'Unidad 3', 'Palabras interrogativas, poder, estar com…', PERGUNTAS),
+  pack('restaurante', '🍽️', 'Restaurante', 'Unidad 3', 'Pedir, pagar y hablar de comida', RESTAURANTE),
+  pack('verbos-er', '🔡', 'Verbos en -er', 'Verbos', 'Presente de los verbos regulares en -er', VERBOS_ER),
+  pack('u4', '🏠', 'La vivienda', 'Unidad 4', 'Casa, muebles, querer/preferir y preposiciones de lugar', U4),
+  pack('verbos-ir', '🔠', 'Verbos en -ir', 'Verbos', 'Presente de los verbos regulares en -ir', VERBOS_IR),
+  pack('calendario', '📅', 'Días, meses y estaciones', 'Unidad 5', 'Calendario completo', CALENDARIO),
+  pack('numeros', '⏰', 'Números y hora', 'Unidad 5', 'Del 0 al mil y cómo decir la hora', NUMEROS),
+  pack('roupa', '👕', 'Ropa y colores', 'Unidad 5', 'Prendas, accesorios y colores', ROUPA),
+  pack('corpo', '🧍', 'Cuerpo y salud', 'Unidad 6', 'Partes del cuerpo, dolores, ver y mostrar', CORPO),
+  pack('adjetivos', '😀', 'Adjetivos y estados', 'Unidad 6', 'Cualidades, estados de ánimo y descripciones', ADJETIVOS),
+  pack('falsos-amigos', '🎭', 'Falsos amigos', 'Transversal', 'Palabras que parecen español pero significan otra cosa', FALSOS_AMIGOS),
+  pack('compras', '🛍️', 'De compras', 'Unidad 7', 'Precios, pagos y verbos fazer/pôr/dizer/dar/trazer', COMPRAS),
+  pack('comparar', '📺', 'Comparar y recordar', 'Unidad 8', 'Comparativos, imperfecto, saber vs conhecer', COMPARAR),
+  pack('praia', '🏖️', 'Playa y tránsito', 'Unidad 9', 'Playa, señales de tránsito y verbos reflexivos', PRAIA),
+  pack('hotel', '🏨', 'En el hotel', 'Unidad 10', 'Hotel, indefinidos, ordinales y diminutivos', HOTEL),
+  pack('pronomes', '🔗', 'Pronombres y participios', 'Unidad 11', 'Cada, vários, outro, sair y participios', PRONOMES),
+  pack('subjuntivo', '👨‍👩‍👧', 'Familia y subjuntivo', 'Unidad 12', 'Subjuntivo, relativos y parentesco', SUBJUNTIVO),
+  pack('adverbios', '💬', 'Adverbios y brasileñismos', 'Unidad 13', 'Adverbios en -mente y expresiones del Brasil', ADVERBIOS),
+  pack('viajes', '✈️', 'Viajes', 'Unidad 14', 'Aeropuerto, hotel, transporte y direcciones', VIAJES),
+  pack('agencia', '🧳', 'Agencia y expresiones con dar', 'Unidad 14', 'Condicional, pedidos y expresiones con dar', AGENCIA),
+  pack('u15', '🎶', 'Condicionales y expresiones', 'Unidad 15', 'Si…, verbos irregulares, modismos y cultura', U15),
 ];
 
 export const PRODUCT_ID = 'bora_pro';

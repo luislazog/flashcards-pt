@@ -16,7 +16,7 @@ import { prepareVoice, speak } from './src/speech';
 import { PACKS, availableCards } from './src/packs';
 import { usePremium } from './src/premium';
 import { PremiumState } from './src/premiumTypes';
-import { dueCards, review, stats } from './src/srs';
+import { buildSession, review, stats } from './src/srs';
 import { loadCustomCards, loadProgress, saveCustomCards, saveProgress } from './src/storage';
 import { Card, ProgressMap } from './src/types';
 
@@ -55,9 +55,8 @@ export default function App() {
     });
   }, []);
 
-  const startStudy = () => {
-    const due = dueCards(cards, progress).sort(() => Math.random() - 0.5).slice(0, 20);
-    setSession(due);
+  const startStudy = (scope?: Card[]) => {
+    setSession(buildSession(scope ?? cards, progress, scope ? 15 : 10));
     setScreen('study');
   };
 
@@ -89,6 +88,8 @@ export default function App() {
       {screen === 'home' && (
         <Home
           stats={stats(cards, progress)}
+          todayCount={buildSession(cards, progress).length}
+          progress={progress}
           premium={premium}
           onStudy={startStudy}
           onAdd={() => setScreen('add')}
@@ -104,15 +105,20 @@ export default function App() {
 
 function Home({
   stats: s,
+  todayCount,
+  progress,
   premium,
   onStudy,
   onAdd,
 }: {
   stats: ReturnType<typeof stats>;
+  todayCount: number;
+  progress: ProgressMap;
   premium: PremiumState;
-  onStudy: () => void;
+  onStudy: (scope?: Card[]) => void;
   onAdd: () => void;
 }) {
+  const hasPremiumPacks = PACKS.some((p) => p.premium);
   return (
     <ScrollView contentContainerStyle={styles.home}>
       <Text style={styles.title}>Bora! 🇧🇷</Text>
@@ -125,35 +131,49 @@ function Home({
       </View>
 
       <Pressable
-        style={[styles.primary, s.due === 0 && styles.disabled]}
-        disabled={s.due === 0}
-        onPress={onStudy}
+        style={[styles.primary, todayCount === 0 && styles.disabled]}
+        disabled={todayCount === 0}
+        onPress={() => onStudy()}
       >
         <Text style={styles.primaryText}>
-          {s.due === 0 ? '¡Todo al día por hoy!' : `Estudiar (${s.due} pendientes)`}
+          {todayCount === 0 ? '¡Todo al día por hoy!' : `Estudiar hoy (${todayCount} tarjetas)`}
         </Text>
       </Pressable>
       <Pressable style={styles.secondary} onPress={onAdd}>
         <Text style={styles.secondaryText}>Mis tarjetas / Agregar</Text>
       </Pressable>
 
-      <Text style={[styles.subtitle, { marginTop: 18 }]}>Mazos</Text>
-      {PACKS.map((pack) => {
+      <Text style={[styles.subtitle, { marginTop: 18 }]}>Ruta de aprendizaje</Text>
+      <Text style={styles.muted}>Va de lo básico a lo avanzado. Toca un mazo para estudiarlo solo.</Text>
+      {PACKS.map((pack, i) => {
         const locked = pack.premium && !premium.premium;
+        const learned = pack.cards.filter((c) => (progress[c.id]?.box ?? 0) > 0).length;
         return (
-          <View key={pack.id} style={[styles.pack, locked && styles.packLocked]}>
+          <Pressable
+            key={pack.id}
+            disabled={locked}
+            onPress={() => onStudy(pack.cards)}
+            style={[styles.pack, locked && styles.packLocked]}
+          >
             <Text style={styles.packEmoji}>{locked ? '🔒' : pack.emoji}</Text>
             <View style={{ flex: 1 }}>
+              <Text style={styles.packUnit}>
+                {i}. {pack.unit}
+              </Text>
               <Text style={styles.packTitle}>{pack.title}</Text>
-              <Text style={styles.muted}>
-                {pack.cards.length} tarjetas · {pack.description}
+              <Text style={styles.muted}>{pack.description}</Text>
+              <View style={styles.bar}>
+                <View style={[styles.barFill, { width: `${(learned / pack.cards.length) * 100}%` }]} />
+              </View>
+              <Text style={styles.packCount}>
+                {learned} / {pack.cards.length} tarjetas
               </Text>
             </View>
-          </View>
+          </Pressable>
         );
       })}
 
-      {!premium.premium && premium.available && (
+      {hasPremiumPacks && !premium.premium && premium.available && (
         <>
           <Pressable style={[styles.pro, premium.busy && styles.disabled]} disabled={premium.busy} onPress={premium.buy}>
             <Text style={styles.proText}>
@@ -166,7 +186,7 @@ function Home({
           </Pressable>
         </>
       )}
-      {premium.premium && <Text style={[styles.muted, { textAlign: 'center' }]}>Bora Pro activo ✓ Gracias por apoyar la app</Text>}
+      {hasPremiumPacks && premium.premium && <Text style={[styles.muted, { textAlign: 'center' }]}>Bora Pro activo ✓ Gracias por apoyar la app</Text>}
       {premium.message && <Text style={[styles.muted, { textAlign: 'center' }]}>{premium.message}</Text>}
     </ScrollView>
   );
@@ -218,6 +238,7 @@ function Study({ cards, onAnswer, onExit }: { cards: Card[]; onAnswer: (c: Card,
       <Pressable style={styles.flashcard} onPress={() => setFlipped(!flipped)}>
         {!flipped ? (
           <>
+            {card.kind && <Text style={styles.kind}>{card.kind}</Text>}
             <Text style={styles.cardMain}>{card.pt}</Text>
             <Pressable onPress={() => speak(card.pt)} hitSlop={12}>
               <Text style={styles.speaker}>🔊 Escuchar</Text>
@@ -315,6 +336,24 @@ const styles = StyleSheet.create({
   link: { color: COLORS.blue, fontSize: 16 },
   pack: { flexDirection: 'row', alignItems: 'center', gap: 12, backgroundColor: COLORS.card, borderRadius: 14, padding: 14 },
   packLocked: { opacity: 0.6 },
+  packUnit: { fontSize: 12, fontWeight: '700', color: COLORS.green, textTransform: 'uppercase' },
+  packCount: { fontSize: 12, color: COLORS.muted, marginTop: 2 },
+  bar: { height: 6, borderRadius: 3, backgroundColor: '#E5E7EB', marginTop: 8, overflow: 'hidden' },
+  barFill: { height: 6, borderRadius: 3, backgroundColor: COLORS.green },
+  kind: {
+    position: 'absolute',
+    top: 18,
+    alignSelf: 'center',
+    backgroundColor: '#EEF2FF',
+    color: COLORS.blue,
+    fontSize: 12,
+    fontWeight: '700',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 10,
+    overflow: 'hidden',
+    textTransform: 'uppercase',
+  },
   packEmoji: { fontSize: 26 },
   packTitle: { fontSize: 16, fontWeight: '700', color: COLORS.text },
   pro: { backgroundColor: COLORS.blue, padding: 16, borderRadius: 14, alignItems: 'center', gap: 2 },

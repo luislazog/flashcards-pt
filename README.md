@@ -3,7 +3,7 @@
 App Android (Expo / React Native + TypeScript) de flashcards con repetición espaciada (cajas de Leitner),
 pronunciación en pt-BR y tarjetas propias. Traducciones al español.
 
-Modelo: gratis (mazo Básico) + compra única "Bora Pro" (`bora_pro`) con los mazos extra, vía `expo-iap` / Google Play Billing. En web y Expo Go no hay tienda; probar la interfaz con `?store=1` o `?premium=1` en la URL web.
+Modelo actual: todo gratis (25 mazos en `src/packs.ts`, ruta ordenada de lo básico a lo avanzado). La compra única "Bora Pro" (`bora_pro`, vía `expo-iap` / Google Play Billing) está implementada: para activarla basta poner `premium: true` en los mazos que se quieran cobrar. En web y Expo Go no hay tienda; probar la interfaz con `?store=1` o `?premium=1` en la URL web.
 
 ## Desarrollo
 ```bash
