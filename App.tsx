@@ -13,7 +13,9 @@ import {
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import * as Speech from 'expo-speech';
-import { BASE_CARDS } from './src/cards';
+import { PACKS, availableCards } from './src/packs';
+import { usePremium } from './src/premium';
+import { PremiumState } from './src/premiumTypes';
 import { dueCards, review, stats } from './src/srs';
 import { loadCustomCards, loadProgress, saveCustomCards, saveProgress } from './src/storage';
 import { Card, ProgressMap } from './src/types';
@@ -43,7 +45,8 @@ export default function App() {
   const [ready, setReady] = useState(false);
   const [session, setSession] = useState<Card[]>([]);
 
-  const cards = useMemo(() => [...BASE_CARDS, ...custom], [custom]);
+  const premium = usePremium();
+  const cards = useMemo(() => availableCards(custom, premium.premium), [custom, premium.premium]);
 
   useEffect(() => {
     Promise.all([loadCustomCards(), loadProgress()]).then(([c, p]) => {
@@ -85,7 +88,12 @@ export default function App() {
     <SafeAreaView style={styles.screen}>
       <StatusBar style="dark" />
       {screen === 'home' && (
-        <Home stats={stats(cards, progress)} onStudy={startStudy} onAdd={() => setScreen('add')} />
+        <Home
+          stats={stats(cards, progress)}
+          premium={premium}
+          onStudy={startStudy}
+          onAdd={() => setScreen('add')}
+        />
       )}
       {screen === 'study' && <Study cards={session} onAnswer={answer} onExit={() => setScreen('home')} />}
       {screen === 'add' && (
@@ -95,10 +103,20 @@ export default function App() {
   );
 }
 
-function Home({ stats: s, onStudy, onAdd }: { stats: ReturnType<typeof stats>; onStudy: () => void; onAdd: () => void }) {
+function Home({
+  stats: s,
+  premium,
+  onStudy,
+  onAdd,
+}: {
+  stats: ReturnType<typeof stats>;
+  premium: PremiumState;
+  onStudy: () => void;
+  onAdd: () => void;
+}) {
   return (
     <ScrollView contentContainerStyle={styles.home}>
-      <Text style={styles.title}>Português 🇧🇷</Text>
+      <Text style={styles.title}>Bora! 🇧🇷</Text>
       <Text style={styles.subtitle}>Aprende portugués con tarjetas</Text>
 
       <View style={styles.statsRow}>
@@ -119,6 +137,38 @@ function Home({ stats: s, onStudy, onAdd }: { stats: ReturnType<typeof stats>; o
       <Pressable style={styles.secondary} onPress={onAdd}>
         <Text style={styles.secondaryText}>Mis tarjetas / Agregar</Text>
       </Pressable>
+
+      <Text style={[styles.subtitle, { marginTop: 18 }]}>Mazos</Text>
+      {PACKS.map((pack) => {
+        const locked = pack.premium && !premium.premium;
+        return (
+          <View key={pack.id} style={[styles.pack, locked && styles.packLocked]}>
+            <Text style={styles.packEmoji}>{locked ? '🔒' : pack.emoji}</Text>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.packTitle}>{pack.title}</Text>
+              <Text style={styles.muted}>
+                {pack.cards.length} tarjetas · {pack.description}
+              </Text>
+            </View>
+          </View>
+        );
+      })}
+
+      {!premium.premium && premium.available && (
+        <>
+          <Pressable style={[styles.pro, premium.busy && styles.disabled]} disabled={premium.busy} onPress={premium.buy}>
+            <Text style={styles.proText}>
+              Desbloquear Bora Pro{premium.price ? ` · ${premium.price}` : ''}
+            </Text>
+            <Text style={styles.proSub}>Pago único. Todos los mazos, hoy y los que vengan.</Text>
+          </Pressable>
+          <Pressable onPress={premium.restore} disabled={premium.busy}>
+            <Text style={[styles.link, { textAlign: 'center' }]}>Restaurar compra</Text>
+          </Pressable>
+        </>
+      )}
+      {premium.premium && <Text style={[styles.muted, { textAlign: 'center' }]}>Bora Pro activo ✓ Gracias por apoyar la app</Text>}
+      {premium.message && <Text style={[styles.muted, { textAlign: 'center' }]}>{premium.message}</Text>}
     </ScrollView>
   );
 }
@@ -264,6 +314,13 @@ const styles = StyleSheet.create({
   subtitle: { fontSize: 16, color: COLORS.muted },
   muted: { color: COLORS.muted },
   link: { color: COLORS.blue, fontSize: 16 },
+  pack: { flexDirection: 'row', alignItems: 'center', gap: 12, backgroundColor: COLORS.card, borderRadius: 14, padding: 14 },
+  packLocked: { opacity: 0.6 },
+  packEmoji: { fontSize: 26 },
+  packTitle: { fontSize: 16, fontWeight: '700', color: COLORS.text },
+  pro: { backgroundColor: COLORS.blue, padding: 16, borderRadius: 14, alignItems: 'center', gap: 2 },
+  proText: { color: '#fff', fontSize: 17, fontWeight: '800' },
+  proSub: { color: COLORS.yellow, fontSize: 13 },
   statsRow: { flexDirection: 'row', gap: 10, marginVertical: 12 },
   stat: { flex: 1, backgroundColor: COLORS.card, borderRadius: 14, padding: 14, alignItems: 'center' },
   statValue: { fontSize: 28, fontWeight: '800' },

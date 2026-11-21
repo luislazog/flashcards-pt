@@ -1,7 +1,9 @@
-# Português — tarjetas para aprender portugués
+# Bora! — tarjetas para aprender portugués
 
 App Android (Expo / React Native + TypeScript) de flashcards con repetición espaciada (cajas de Leitner),
 pronunciación en pt-BR y tarjetas propias. Traducciones al español.
+
+Modelo: gratis (mazo Básico) + compra única "Bora Pro" (`bora_pro`) con los mazos extra, vía `expo-iap` / Google Play Billing. En web y Expo Go no hay tienda; probar la interfaz con `?store=1` o `?premium=1` en la URL web.
 
 ## Desarrollo
 ```bash
@@ -17,5 +19,5 @@ npx expo start        # escanea el QR con Expo Go, o pulsa "a" para el emulador
 5. Falta antes de publicar: icono definitivo (`assets/`), capturas, descripción y política de privacidad.
 
 ## Estructura
-- `src/cards.ts` mazo inicial · `src/srs.ts` repetición espaciada · `src/storage.ts` persistencia local
+- `src/cards.ts` mazo básico · `src/packs.ts` mazos y premium · `src/premium*.ts` compras · `src/srs.ts` repetición espaciada · `src/storage.ts` persistencia local
 - `App.tsx` pantallas: inicio, estudio y agregar tarjetas

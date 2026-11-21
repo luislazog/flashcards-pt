@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Português",
+    "name": "Bora!",
     "slug": "flashcards-pt",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -27,6 +27,9 @@
         "projectId": "0fc5a570-5745-4a6d-8731-a8e290f3e174"
       }
     },
-    "owner": "luislazog"
+    "owner": "luislazog",
+    "plugins": [
+      "expo-iap"
+    ]
   }
 }
