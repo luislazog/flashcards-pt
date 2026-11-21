@@ -29,6 +29,7 @@
     },
     "owner": "luislazog",
     "plugins": [
+      "./plugins/withOptionalPortrait",
       "expo-iap"
     ]
   }
