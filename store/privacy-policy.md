@@ -23,4 +23,4 @@ La app no recopila datos de ninguna persona, incluidos los menores de edad.
 Si esta política cambia, publicaremos la versión actualizada en esta misma dirección.
 
 ## Contacto
-[TU CORREO DE CONTACTO]
+leonardolazog@gmail.com
