@@ -27,4 +27,4 @@ Ideal para principiantes, viajeros y para hispanohablantes que quieren dar sus p
 ## Gráficos
 - Icono 512×512: `store/icon-512.png`
 - Gráfico de funciones 1024×500: `store/feature-graphic-1024x500.png`
-- Capturas de pantalla (mín. 2, teléfono): tómalas desde el emulador o tu celular con la app corriendo
+- Capturas de pantalla (1080×1920): `store/screenshots/`
