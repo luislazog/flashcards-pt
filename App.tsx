@@ -12,7 +12,7 @@ import {
   View,
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import * as Speech from 'expo-speech';
+import { prepareVoice, speak } from './src/speech';
 import { PACKS, availableCards } from './src/packs';
 import { usePremium } from './src/premium';
 import { PremiumState } from './src/premiumTypes';
@@ -33,11 +33,6 @@ const COLORS = {
   red: '#C62828',
 };
 
-const speak = (text: string) => {
-  Speech.stop();
-  Speech.speak(text, { language: 'pt-BR', rate: 0.9 });
-};
-
 export default function App() {
   const [screen, setScreen] = useState<Screen>('home');
   const [custom, setCustom] = useState<Card[]>([]);
@@ -47,6 +42,10 @@ export default function App() {
 
   const premium = usePremium();
   const cards = useMemo(() => availableCards(custom, premium.premium), [custom, premium.premium]);
+
+  useEffect(() => {
+    prepareVoice();
+  }, []);
 
   useEffect(() => {
     Promise.all([loadCustomCards(), loadProgress()]).then(([c, p]) => {
